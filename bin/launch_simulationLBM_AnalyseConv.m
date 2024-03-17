@@ -22,16 +22,14 @@ mean_fiber_d= 12.5 ; % in microns
 std_d= 2.85 ; % in microns
 dx= 2e-6 ; % grid size in m
 filename= 'fiber_mat.tiff' ;
-
-mu_porosite=0.9;
-sigma_porosite=7.5*10^-3;
-poro_liste = normrnd(mu_porosite,sigma_porosite,[1,100]);
+D=NX*dx;
+Npts=[600,300,150,75];
+dx_liste=[D/600,D/300,D/150,D/75];
+for i=1:length(Npts)
 % generation of the fiber structure
 
-for i=1:length(poro_liste)
-    [d_equivalent]=Generate_sample(seed,filename,mean_fiber_d,std_d,poro_liste(i),NX,dx);
+    [d_equivalent]=Generate_sample(seed,filename,mean_fiber_d,std_d,poro,Npts(i),dx_liste(i));
 
 % calculation of the flow field and the permeability from Darcy Law
-    LBM(filename,NX,deltaP,dx,d_equivalent);
-    
-end    
+    LBM(filename,Npts(i),deltaP,dx_liste(i),d_equivalent);
+end
