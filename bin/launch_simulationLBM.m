@@ -14,24 +14,23 @@
 % 
 % NX: domain lateral size in grid cell
 
-seed=101;
+seed=0;
 deltaP= 0.1 ; % pressure drop in Pa
-NX= 100 ;
-poro= 0.9 ;
+N= 100 ;
 mean_fiber_d= 12.5 ; % in microns
 std_d= 2.85 ; % in microns
-dx= 2e-6 ; % grid size in m
+dx_ini= 2e-6 ; % grid size in m
 filename= 'fiber_mat.tiff' ;
-
-mu_porosite=0.9;
-sigma_porosite=7.5*10^-3;
-poro_liste = normrnd(mu_porosite,sigma_porosite,[1,100]);
+D=N*dx_ini;
+NX=200;
+dx=D/NX;
+perm=[];
+nbiter=100;
+for i=1:nbiter
+poro= normrnd(0.9,7.5e-3) ;
 % generation of the fiber structure
-
-for i=1:length(poro_liste)
-    [d_equivalent]=Generate_sample(seed,filename,mean_fiber_d,std_d,poro_liste(i),NX,dx);
-
+[d_equivalent]=Generate_sample(seed,filename,mean_fiber_d,std_d,poro,NX,dx);
 % calculation of the flow field and the permeability from Darcy Law
-    LBM(filename,NX,deltaP,dx,d_equivalent);
-    
-end    
+perm=LBM(filename,NX,deltaP,dx,d_equivalent);
+save('Monte_Carlo.txt','perm','-ascii','-append')
+end
