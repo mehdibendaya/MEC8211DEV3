@@ -23,13 +23,15 @@ std_d= 2.85 ; % in microns
 dx= 2e-6 ; % grid size in m
 filename= 'fiber_mat.tiff' ;
 D=NX*dx;
-Npts=[600,300,150,75];
-dx_liste=[D/600,D/300,D/150,D/75];
+Npts=[600,400,300,200,150,100,75,50];
+dx_liste=[D/600,D/400,D/300,D/200,D/150,D/100,D/75,D/50];
+perm=[];
+ 
 for i=1:length(Npts)
-% generation of the fiber structure
-
+   % generation of the fiber structure
     [d_equivalent]=Generate_sample(seed,filename,mean_fiber_d,std_d,poro,Npts(i),dx_liste(i));
-
-% calculation of the flow field and the permeability from Darcy Law
-    LBM(filename,Npts(i),deltaP,dx_liste(i),d_equivalent);
+   % calculation of the flow field and the permeability from Darcy Law
+    perm_i=LBM(filename,Npts(i),deltaP,dx_liste(i),d_equivalent);
+    perm(end+1)=perm_i;
 end
+save('Results.txt','Npts','dx_liste','perm','-ascii','-append')
